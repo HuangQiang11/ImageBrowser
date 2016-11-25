@@ -75,9 +75,10 @@
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         [subScrollView addSubview:imageView];
 
+         imageView.userInteractionEnabled =YES;
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapImageView:)];
         tapGesture.numberOfTapsRequired = 2;
-        [subScrollView addGestureRecognizer:tapGesture];
+       [imageView addGestureRecognizer:tapGesture];
         
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView:)];
         tap.numberOfTapsRequired = 1;
@@ -111,14 +112,37 @@
 
 - (void)didTapImageView:(UITapGestureRecognizer *)tap
 {
-    UIScrollView *scroll = (UIScrollView *)tap.view;
-    if (scroll.zoomScale == MinScale) {
-        CGRect newRect = [self zoomRectByScale:MaxScale Center:[tap locationInView:tap.view]];
-        //zoomToRect方法是UIScrollVie对象的方法,将图片相对放大
-        [scroll zoomToRect:newRect animated:YES];
-    }else {
-        [scroll setZoomScale:MinScale animated:YES];
-    }
+//    UIScrollView *scroll = (UIScrollView *)tap.view;
+//    if (scroll.zoomScale == MinScale) {
+//        CGRect newRect = [self zoomRectByScale:MaxScale Center:[tap locationInView:tap.view]];
+//        //zoomToRect方法是UIScrollVie对象的方法,将图片相对放大
+//        [scroll zoomToRect:newRect animated:YES];
+//    }else {
+//        [scroll setZoomScale:MinScale animated:YES];
+//    }
+    CGPoint touchPoint=[tap locationInView:tap.view];
+    UIScrollView * scrollView = (UIScrollView *)tap.view.superview;
+    
+    BOOL zoomOut=scrollView.zoomScale==scrollView.minimumZoomScale;
+    CGFloat scale=zoomOut?scrollView.maximumZoomScale:scrollView.minimumZoomScale;
+    [UIView animateWithDuration:0.3 animations:^{
+        scrollView.zoomScale=scale;
+        if(zoomOut){
+            CGFloat x=touchPoint.x*scale-scrollView.bounds.size.width/2;
+            CGFloat maxX=scrollView.contentSize.width-scrollView.bounds.size.width;
+            CGFloat minX=0;
+            x=x>maxX?maxX:x;
+            x=x<minX?minX:x;
+            
+            CGFloat y=touchPoint.y*scale-scrollView.bounds.size.height/2;
+            CGFloat maxY=scrollView.contentSize.height-scrollView.bounds.size.height;
+            CGFloat minY=0;
+            y=y>maxY?maxY:y;
+            y=y<minY?minY:y;
+            scrollView.contentOffset=CGPointMake(x, y);
+        }
+    }];
+
 }
 
 - (CGRect)zoomRectByScale:(CGFloat)scale Center:(CGPoint)center
