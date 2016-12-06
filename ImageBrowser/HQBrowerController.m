@@ -13,7 +13,7 @@
 #define MinScale  1.0
 @interface HQBrowerController ()<UIScrollViewDelegate>
 @property (strong, nonatomic) UIScrollView * bottomScrollView;
-@property (assign, nonatomic) CGPoint originalPoint;
+//@property (assign, nonatomic) CGPoint originalPoint;
 @property (strong, nonatomic) UIImageView * imageView;
 @property (strong, nonatomic) UIPageControl * pageControl;
 @end
@@ -24,7 +24,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     if (self.imageView) {
-         self.originalPoint = self.imageView.center;
+//         self.originalPoint = self.imageView.center;
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     [self setupLayout];
@@ -35,7 +35,7 @@
     if (self.imageView) {
         [self.view bringSubviewToFront:self.imageView];
         [UIView animateWithDuration:0.5 animations:^{
-            self.imageView.center = self.view.center;
+            self.imageView.frame = CGRectMake(0, (Screen_Height-Screen_Width)/2.0, Screen_Width, Screen_Width);
         } completion:^(BOOL finished) {
             self.bottomScrollView.hidden = NO;
             self.imageView.hidden = YES;
@@ -101,7 +101,7 @@
             [self.delegate dismissViewWithTurnToTag:(NSInteger)self.bottomScrollView.contentOffset.x/Screen_Width];
         }
         [UIView animateWithDuration:0.3 animations:^{
-            self.imageView.center = self.originalPoint;
+            self.imageView.frame = self.originalRect;
         } completion:^(BOOL finished) {
             [self dismissViewControllerAnimated:NO completion:nil];
         }];
