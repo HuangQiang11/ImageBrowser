@@ -25,7 +25,7 @@
     // Do any additional setup after loading the view.
     if (self.imageView) {
 //         self.originalPoint = self.imageView.center;
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFit;//尺寸不确定时最好注释掉代码
     }
     [self setupLayout];
 }
@@ -34,8 +34,9 @@
     [super viewDidAppear:animated];
     if (self.imageView) {
         [self.view bringSubviewToFront:self.imageView];
+        CGFloat h = self.originalRect.size.height/self.originalRect.size.width*Screen_Width;
         [UIView animateWithDuration:0.5 animations:^{
-            self.imageView.frame = CGRectMake(0, (Screen_Height-Screen_Width)/2.0, Screen_Width, Screen_Width);
+            self.imageView.frame = CGRectMake(0, (Screen_Height-h)/2.0, Screen_Width, h);
         } completion:^(BOOL finished) {
             self.bottomScrollView.hidden = NO;
             self.imageView.hidden = YES;
@@ -62,23 +63,25 @@
 
 - (void)creatView{
     for (int i =0; i<self.imageArr.count; i++) {
+        CGFloat h = self.originalRect.size.height/self.originalRect.size.width*Screen_Width;
+        
         UIScrollView * subScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(i*Screen_Width, 0, Screen_Width, Screen_Height)];
         subScrollView.backgroundColor = [UIColor clearColor];
         subScrollView.minimumZoomScale = MinScale;
         subScrollView.maximumZoomScale = MaxScale;
         subScrollView.delegate = self;
-        subScrollView.contentSize = CGSizeMake(Screen_Width, Screen_Width);
+        subScrollView.contentSize = CGSizeMake(Screen_Width, h);
         [self.bottomScrollView addSubview:subScrollView];
         
-        UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, (Screen_Height-Screen_Width)/2.0, Screen_Width, Screen_Width)];
+        UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, (Screen_Height-h)/2.0, Screen_Width, h)];
         imageView.image = [UIImage imageNamed:self.imageArr[i]];
-        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imageView.contentMode = UIViewContentModeScaleAspectFit; //尺寸不确定时最好注释掉代码
         [subScrollView addSubview:imageView];
-
-         imageView.userInteractionEnabled =YES;
+        
+        imageView.userInteractionEnabled =YES;
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapImageView:)];
         tapGesture.numberOfTapsRequired = 2;
-       [imageView addGestureRecognizer:tapGesture];
+        [imageView addGestureRecognizer:tapGesture];
         
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView:)];
         tap.numberOfTapsRequired = 1;
