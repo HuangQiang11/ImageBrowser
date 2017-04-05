@@ -18,26 +18,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    CGFloat w = CGRectGetWidth(self.view.frame);
-    
-    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, w, w)];
-    self.scrollView.pagingEnabled = YES;
-    self.scrollView.contentSize = CGSizeMake(self.imageArr.count*w, w);
     [self.view addSubview:self.scrollView];
-    
-    for (int i = 0; i<self.imageArr.count; i++) {
-        UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*w, 0,w, w)];
-        imageView.image = [UIImage imageNamed:self.imageArr[i]];
-        imageView.userInteractionEnabled = YES;
-        imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [self.scrollView addSubview:imageView];
-        imageView.tag = i;
-        
-        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
-        [imageView addGestureRecognizer:tap];
-    }
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if (self.scrollView.subviews.count == 0) {
+        CGFloat w = CGRectGetWidth(self.view.frame);
+        self.scrollView.frame = CGRectMake(0, 40, w, w);
+        self.scrollView.contentSize = CGSizeMake(self.imageArr.count*w, w);
+        for (int i = 0; i<self.imageArr.count; i++) {
+            UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*w, 0,w, w)];
+            imageView.image = [UIImage imageNamed:self.imageArr[i]];
+            imageView.userInteractionEnabled = YES;
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            [self.scrollView addSubview:imageView];
+            imageView.tag = i;
+            
+            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+            [imageView addGestureRecognizer:tap];
+        }
+    }
+}
 
 - (void)tapAction:(UITapGestureRecognizer *)tap{
     HQBrowerController * vc = [[HQBrowerController alloc] init];
@@ -57,6 +59,7 @@
     self.scrollView.contentOffset = CGPointMake(tag*CGRectGetWidth(self.view.frame), 0);
 }
 
+#pragma mark lazy
 - (NSArray *)imageArr{
     if (!_imageArr) {
         _imageArr = @[@"1",@"2",@"3"];
@@ -64,5 +67,14 @@
     return _imageArr;
 }
 
+- (UIScrollView *)scrollView{
+    if (!_scrollView) {
+        _scrollView = [[UIScrollView alloc] init];
+        _scrollView.pagingEnabled = YES;
+        _scrollView.showsVerticalScrollIndicator = NO;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+    }
+    return  _scrollView;
+}
 
 @end

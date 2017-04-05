@@ -115,14 +115,6 @@
 
 - (void)didTapImageView:(UITapGestureRecognizer *)tap
 {
-//    UIScrollView *scroll = (UIScrollView *)tap.view;
-//    if (scroll.zoomScale == MinScale) {
-//        CGRect newRect = [self zoomRectByScale:MaxScale Center:[tap locationInView:tap.view]];
-//        //zoomToRect方法是UIScrollVie对象的方法,将图片相对放大
-//        [scroll zoomToRect:newRect animated:YES];
-//    }else {
-//        [scroll setZoomScale:MinScale animated:YES];
-//    }
     CGPoint touchPoint=[tap locationInView:tap.view];
     UIScrollView * scrollView = (UIScrollView *)tap.view.superview;
     
