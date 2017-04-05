@@ -3,5 +3,5 @@
 
 效果如下:<br>
 
-![image](https://github.com/HuangQiang11/ImageBrowser/blob/master/Images/LElinkN1xY.gif)
+![image](https://github.com/HuangQiang11/ImageBrowser/blob/master/Images/jg090pWVS6.gif)
 
