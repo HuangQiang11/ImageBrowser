@@ -64,29 +64,37 @@
 - (void)creatView{
     for (int i =0; i<self.imageArr.count; i++) {
         CGFloat h = self.originalRect.size.height/self.originalRect.size.width*Screen_Width;
-        
-        UIScrollView * subScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(i*Screen_Width, 0, Screen_Width, Screen_Height)];
-        subScrollView.backgroundColor = [UIColor clearColor];
-        subScrollView.minimumZoomScale = MinScale;
-        subScrollView.maximumZoomScale = MaxScale;
-        subScrollView.delegate = self;
-        subScrollView.contentSize = CGSizeMake(Screen_Width, h);
+        UIScrollView * subScrollView = ({
+            UIScrollView * subScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(i*Screen_Width, 0, Screen_Width, Screen_Height)];
+            subScrollView.backgroundColor = [UIColor clearColor];
+            subScrollView.minimumZoomScale = MinScale;
+            subScrollView.maximumZoomScale = MaxScale;
+            subScrollView.delegate = self;
+            subScrollView.contentSize = CGSizeMake(Screen_Width, h);
+            subScrollView;
+        });
+        UIImageView * imageView = ({
+            UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, (Screen_Height-h)/2.0, Screen_Width, h)];
+            imageView.image = [UIImage imageNamed:self.imageArr[i]];
+            imageView.contentMode = UIViewContentModeScaleAspectFit; //尺寸不确定时最好注释掉代码
+            imageView.userInteractionEnabled =YES;
+            imageView;
+        });
+        UITapGestureRecognizer *tapGesture = ({
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapImageView:)];
+            tapGesture.numberOfTapsRequired = 2;
+            tapGesture;
+        });
+        UITapGestureRecognizer * tap = ({
+            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView:)];
+            tap.numberOfTapsRequired = 1;
+            //如果不加下面的话，当单指双击时，会先调用单指单击中的处理，再调用单指双击中的处理
+            [tap requireGestureRecognizerToFail:tapGesture];
+            tap;
+        });
         [self.bottomScrollView addSubview:subScrollView];
-        
-        UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, (Screen_Height-h)/2.0, Screen_Width, h)];
-        imageView.image = [UIImage imageNamed:self.imageArr[i]];
-        imageView.contentMode = UIViewContentModeScaleAspectFit; //尺寸不确定时最好注释掉代码
         [subScrollView addSubview:imageView];
-        
-        imageView.userInteractionEnabled =YES;
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapImageView:)];
-        tapGesture.numberOfTapsRequired = 2;
         [imageView addGestureRecognizer:tapGesture];
-        
-        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView:)];
-        tap.numberOfTapsRequired = 1;
-        //如果不加下面的话，当单指双击时，会先调用单指单击中的处理，再调用单指双击中的处理
-        [tap requireGestureRecognizerToFail:tapGesture];
         [subScrollView addGestureRecognizer:tap];
     }
 }

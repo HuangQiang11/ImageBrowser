@@ -29,13 +29,15 @@
         self.scrollView.frame = CGRectMake(0, 40, w, w);
         self.scrollView.contentSize = CGSizeMake(self.imageArr.count*w, w);
         for (int i = 0; i<self.imageArr.count; i++) {
-            UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*w, 0,w, w)];
-            imageView.image = [UIImage imageNamed:self.imageArr[i]];
-            imageView.userInteractionEnabled = YES;
-            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            UIImageView * imageView = ({
+                UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*w, 0,w, w)];
+                imageView.image = [UIImage imageNamed:self.imageArr[i]];
+                imageView.userInteractionEnabled = YES;
+                imageView.contentMode = UIViewContentModeScaleAspectFit;
+                imageView.tag = i;
+                imageView;
+            });
             [self.scrollView addSubview:imageView];
-            imageView.tag = i;
-            
             UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
             [imageView addGestureRecognizer:tap];
         }
@@ -43,12 +45,14 @@
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)tap{
-    HQBrowerController * vc = [[HQBrowerController alloc] init];
-    vc.delegate = self;
-    vc.imageArr = self.imageArr;
-    vc.tag = tap.view.tag;
-    vc.originalRect = [self.scrollView convertRect:tap.view.frame toView:self.view];
-    [self presentViewController:vc animated:NO completion:nil];
+    [self presentViewController:({
+        HQBrowerController * vc = [[HQBrowerController alloc] init];
+        vc.delegate = self;
+        vc.imageArr = self.imageArr;
+        vc.tag = tap.view.tag;
+        vc.originalRect = [self.scrollView convertRect:tap.view.frame toView:self.view];
+        vc;
+    }) animated:NO completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
