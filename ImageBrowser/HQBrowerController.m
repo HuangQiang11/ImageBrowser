@@ -148,20 +148,6 @@
 
 }
 
-- (CGRect)zoomRectByScale:(CGFloat)scale Center:(CGPoint)center
-{
-    CGRect zoomRect;
-    //求出新的长和宽
-    zoomRect.size.width = Screen_Width / scale;
-    zoomRect.size.height = Screen_Height / scale;
-    
-    //找到新的原点
-    zoomRect.origin.x = center.x * (1 - 1/scale);
-    zoomRect.origin.y = center.y * (1 - 1/scale);
-    
-    return zoomRect;
-}
-
 #pragma mark lazy
 - (UIScrollView *)bottomScrollView{
     if (!_bottomScrollView) {
