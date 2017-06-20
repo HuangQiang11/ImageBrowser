@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "HQBrowerController.h"
 @interface ViewController ()<BrowerDelegate>
-@property (strong, nonatomic)  NSArray * imageArr;
+@property (copy, nonatomic)  NSArray * imageArr;
 @property (strong, nonatomic)  UIScrollView * scrollView;
 @end
 
